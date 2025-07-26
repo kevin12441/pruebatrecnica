@@ -3,6 +3,22 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        @if (User.IsInRole("Administrador"))
+        {
+            <h1 class="display-4">¡Bienvenido Administrador!</h1>
+            <p>Tienes acceso total al sistema de gestión de usuarios y roles.</p>
+        }
+        else
+        {
+            <h1 class="display-4">¡Bienvenido Usuario!</h1>
+            <p>Accede a las funcionalidades disponibles para tu rol.</p>
+        }
+    }
+    else
+    {
+        <h1 class="display-4">Bienvenido</h1>
+        <p>Por favor, inicia sesión para acceder al sistema.</p>
+    }
 </div>

@@ -1,35 +1,149 @@
-﻿@model IEnumerable<WebApplication2.Models.Role>
+﻿@model IEnumerable<WebApplication2.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Usuarios";
 }
 
-<h1>Index</h1>
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="page-header">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-users me-3 text-primary"></i>
+                        <span class="gradient-text">Gestión de Usuarios</span>
+                    </h1>
+                    <p class="text-muted">Administra los usuarios del sistema de forma eficiente</p>
+                </div>
+                <a asp-action="Create" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Nuevo Usuario
+                </a>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-list me-2"></i>Lista de Usuarios
+                        </div>
+                        <div class="form-group mb-0">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Buscar usuarios...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <i class="fas fa-user me-2"></i>Nombre
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-envelope me-2"></i>Correo Electrónico
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-user-tag me-2"></i>Rol
+                                    </th>
+                                    <th class="text-center">
+                                        <i class="fas fa-cogs me-2"></i>Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model) {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Email)
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info text-dark">
+                                                @Html.DisplayFor(modelItem => item.Role.Name)
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                                   class="btn btn-primary btn-sm action-button edit-button"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   title="Editar Usuario">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Details" asp-route-id="@item.Id"
+                                                   class="btn btn-info btn-sm action-button details-button"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   title="Ver Detalles">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                   class="btn btn-danger btn-sm action-button delete-button"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   title="Eliminar Usuario">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Inicializar tooltips de Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Script para la funcionalidad de búsqueda en la tabla de usuarios
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var input, filter, table, tr, tdName, tdEmail, i, txtValueName, txtValueEmail;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.querySelector("table.table-hover"); // Asegúrate de que esta sea la tabla correcta
+            tr = table.getElementsByTagName("tr");
+
+            // Itera sobre todas las filas de la tabla (comenzando desde la segunda fila para ignorar el encabezado)
+            for (i = 1; i < tr.length; i++) {
+                // Oculta la fila por defecto
+                tr[i].style.display = "none";
+
+                // Obtén las celdas de Nombre (índice 0) y Correo Electrónico (índice 1)
+                tdName = tr[i].getElementsByTagName("td")[0];
+                tdEmail = tr[i].getElementsByTagName("td")[1];
+
+                if (tdName || tdEmail) {
+                    txtValueName = tdName.textContent || tdName.innerText;
+                    txtValueEmail = tdEmail.textContent || tdEmail.innerText;
+
+                    // Compara si el filtro coincide con el nombre o el correo electrónico
+                    if (txtValueName.toUpperCase().indexOf(filter) > -1 || txtValueEmail.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = ""; // Muestra la fila si hay una coincidencia
+                    }
+                }
+            }
+        });
+    </script>
 }
-    </tbody>
-</table>
